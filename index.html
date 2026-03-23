@@ -14,24 +14,16 @@
 
         body { 
             background-color: var(--soft-bg); 
-            margin: 0; 
-            padding: 0;
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
+            margin: 0; padding: 0;
+            display: flex; flex-direction: column; align-items: center; 
             font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif; 
             min-height: 100vh;
         }
 
-        /* 頂部資訊卡片 */
         .user-card { 
-            background: white; 
-            width: 90%; 
-            max-width: 380px; 
-            margin: 25px auto 15px; 
-            padding: 25px 15px; 
-            border-radius: 25px; 
-            text-align: center; 
+            background: white; width: 90%; max-width: 380px; 
+            margin: 25px auto 15px; padding: 25px 15px; 
+            border-radius: 25px; text-align: center; 
             box-shadow: 0 4px 20px rgba(0,0,0,0.06);
         }
         .user-card h3 { margin: 0 0 8px; font-size: 20px; color: #111; }
@@ -39,90 +31,53 @@
         .stat-item { font-size: 16px; font-weight: bold; }
         .stat-item span { color: #e74c3c; font-size: 22px; margin: 0 4px; }
 
-        /* 轉盤外框 - 確保絕對置中 */
+        /* 轉盤水平絕對置中佈局 */
         .wheel-outer {
             position: relative;
-            width: 330px;
-            height: 330px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            width: 330px; height: 330px;
+            display: flex; justify-content: center; align-items: center;
             margin: 10px auto;
         }
 
         .wheel-container { 
-            position: relative; 
-            width: 310px; 
-            height: 310px; 
-            background: #fff;
-            border-radius: 50%;
+            position: relative; width: 310px; height: 310px; 
+            background: #fff; border-radius: 50%;
             box-shadow: 0 0 20px rgba(0,0,0,0.15);
-            padding: 5px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            padding: 5px; display: flex; justify-content: center; align-items: center;
         }
         
         #wheel { 
             width: 100%; height: 100%; border-radius: 50%; 
             transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1);
             background: conic-gradient(
-                #e74c3c 0deg 36deg,
-                #3498db 36deg 72deg,
-                #bdc3c7 72deg 108deg,
-                #ecf0f1 108deg 144deg,
-                #bdc3c7 144deg 180deg,
-                #ecf0f1 180deg 216deg,
-                #bdc3c7 216deg 252deg,
-                #ecf0f1 252deg 288deg,
-                #bdc3c7 288deg 324deg,
-                #ecf0f1 324deg 360deg
+                #e74c3c 0deg 36deg, #3498db 36deg 72deg, #bdc3c7 72deg 108deg,
+                #ecf0f1 108deg 144deg, #bdc3c7 144deg 180deg, #ecf0f1 180deg 216deg,
+                #bdc3c7 216deg 252deg, #ecf0f1 252deg 288deg, #bdc3c7 288deg 324deg, #ecf0f1 324deg 360deg
             );
-            position: relative;
-            border: 4px solid #fff;
-            box-sizing: border-box;
+            position: relative; border: 4px solid #fff; box-sizing: border-box;
         }
         
-        /* 指針修正 */
         .pointer { 
-            position: absolute; 
-            top: -10px; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            width: 0; height: 0; 
-            border-left: 18px solid transparent; 
-            border-right: 18px solid transparent; 
-            border-top: 35px solid #ff9500; 
-            z-index: 20;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+            position: absolute; top: -10px; left: 50%; transform: translateX(-50%); 
+            width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent; 
+            border-top: 35px solid #ff9500; z-index: 20;
         }
 
-        /* 獎項文字修正 - 確保文字置中於扇區 */
         .label { 
-            position: absolute; 
-            width: 100%; 
-            text-align: center; 
-            top: 25px; 
-            transform-origin: 50% 130px; 
-            font-weight: bold; 
-            font-size: 13px; 
-            color: #444;
-            left: 0;
-            pointer-events: none;
+            position: absolute; width: 100%; text-align: center; 
+            top: 25px; transform-origin: 50% 130px; 
+            font-weight: bold; font-size: 13px; color: #444; left: 0;
         }
         .label.white { color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
 
-        /* 按鈕美化 */
         #spin-btn { 
             margin: 25px 0; padding: 16px 70px; font-size: 18px; font-weight: bold;
             background: linear-gradient(135deg, var(--line-green), var(--dark-green));
             color: white; border: none; border-radius: 50px; cursor: pointer; 
             box-shadow: 0 6px 20px rgba(6, 199, 85, 0.3); transition: transform 0.2s;
         }
-        #spin-btn:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; opacity: 0.7; }
-        #spin-btn:active { transform: scale(0.95); }
+        #spin-btn:disabled { background: #ccc; box-shadow: none; opacity: 0.7; }
 
-        /* 紀錄卡片 */
         .record-card {
             background: white; width: 85%; max-width: 380px; 
             padding: 18px; border-radius: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
@@ -170,6 +125,7 @@
         
         let tries = 0;
         let currentDeg = 0;
+        let isForced = false;
 
         function updateDateTime() {
             const now = new Date();
@@ -190,23 +146,49 @@
                 }
             } catch (e) {
                 console.error("LIFF 初始化失敗", e);
+                // 非 LINE 環境應急顯示
+                document.getElementById('user-name-display').innerText = "訪客模式 (請用 LINE 開啟)";
+                checkTries("guest", "訪客");
             }
         }
 
         async function checkTries(userId, displayName) {
+            // 【核心應急邏輯】4秒超時強制啟動
+            const timer = setTimeout(() => {
+                if (document.getElementById('tries').innerText === "--") {
+                    console.warn("後端連線超時，啟動應急模式");
+                    tries = 5;
+                    document.getElementById('tries').innerText = tries;
+                    document.getElementById('spin-btn').disabled = false;
+                    isForced = true;
+                }
+            }, 4000);
+
             try {
                 const response = await fetch(`${GAS_URL}?userId=${userId}&name=${encodeURIComponent(displayName)}&t=${Date.now()}`);
                 const res = await response.json();
-                tries = res.triesLeft;
-                document.getElementById('tries').innerText = tries;
-                if (tries > 0) document.getElementById('spin-btn').disabled = false;
-            } catch (e) { console.error(e); }
+                
+                clearTimeout(timer);
+                if (!isForced) {
+                    tries = res.triesLeft;
+                    document.getElementById('tries').innerText = tries;
+                    if (tries > 0) document.getElementById('spin-btn').disabled = false;
+                }
+            } catch (e) {
+                console.error("資料庫連線失敗", e);
+            }
         }
 
         async function handleSpin() {
             if (tries <= 0) return;
             document.getElementById('spin-btn').disabled = true;
-            const profile = await liff.getProfile();
+            
+            let userId = "guest", displayName = "訪客";
+            try {
+                const profile = await liff.getProfile();
+                userId = profile.userId;
+                displayName = profile.displayName;
+            } catch(e){}
 
             const rand = Math.random() * 100;
             let prizeName = "";
@@ -215,16 +197,15 @@
             else if (rand <= 2) { target = 1; prizeName = "100元儲值金"; }
             else { target = Math.floor(Math.random() * 8) + 2; prizeName = "再接再厲"; }
 
-            // 修正旋轉角度計算
             const rotateTo = 360 * 5 - (target * 36 + 18);
             currentDeg += (rotateTo - (currentDeg % 360));
             document.getElementById('wheel').style.transform = `rotate(${currentDeg}deg)`;
 
-            // POST 到後端
+            // POST 到後端 (背景執行)
             fetch(GAS_URL, {
                 method: "POST",
                 mode: "no-cors",
-                body: JSON.stringify({ userId: profile.userId, displayName: profile.displayName, prize: prizeName })
+                body: JSON.stringify({ userId: userId, displayName: displayName, prize: prizeName })
             });
 
             setTimeout(() => {
