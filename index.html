@@ -3,120 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>賞金頑潮-每日幸運轉盤</title>
+    <title>賞金頑潮-幸運轉盤</title>
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <style>
-        :root {
-            --line-green: #06C755;
-            --dark-green: #05a346;
-            --soft-bg: #f5f7f9;
-        }
-
-        body { 
-            background-color: var(--soft-bg); 
-            margin: 0; padding: 0;
-            display: flex; flex-direction: column; align-items: center; 
-            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif; 
-            min-height: 100vh;
-        }
-
-        .user-card { 
-            background: white; width: 90%; max-width: 380px; 
-            margin: 25px auto 15px; padding: 25px 15px; 
-            border-radius: 25px; text-align: center; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-        }
-        .user-card h3 { margin: 0 0 8px; font-size: 20px; color: #111; }
-        .time-display { font-size: 13px; color: #999; margin-bottom: 12px; }
+        :root { --line-green: #06C755; --dark-green: #05a346; --soft-bg: #f5f7f9; }
+        body { background-color: var(--soft-bg); margin: 0; display: flex; flex-direction: column; align-items: center; font-family: sans-serif; min-height: 100vh; }
+        .user-card { background: white; width: 90%; max-width: 380px; margin: 20px auto; padding: 20px; border-radius: 20px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .time-display { font-size: 12px; color: #999; margin: 5px 0; }
         .stat-item { font-size: 16px; font-weight: bold; }
-        .stat-item span { color: #e74c3c; font-size: 22px; margin: 0 4px; }
-
-        /* 轉盤水平絕對置中佈局 */
-        .wheel-outer {
-            position: relative;
-            width: 330px; height: 330px;
-            display: flex; justify-content: center; align-items: center;
-            margin: 10px auto;
-        }
-
-        .wheel-container { 
-            position: relative; width: 310px; height: 310px; 
-            background: #fff; border-radius: 50%;
-            box-shadow: 0 0 20px rgba(0,0,0,0.15);
-            padding: 5px; display: flex; justify-content: center; align-items: center;
-        }
+        .stat-item span { color: #e74c3c; font-size: 22px; }
         
+        .wheel-outer { position: relative; width: 320px; height: 320px; display: flex; justify-content: center; align-items: center; margin: 10px auto; }
+        .wheel-container { position: relative; width: 300px; height: 300px; background: #fff; border-radius: 50%; box-shadow: 0 0 20px rgba(0,0,0,0.1); padding: 5px; }
         #wheel { 
-            width: 100%; height: 100%; border-radius: 50%; 
-            transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1);
-            background: conic-gradient(
-                #e74c3c 0deg 36deg, #3498db 36deg 72deg, #bdc3c7 72deg 108deg,
-                #ecf0f1 108deg 144deg, #bdc3c7 144deg 180deg, #ecf0f1 180deg 216deg,
-                #bdc3c7 216deg 252deg, #ecf0f1 252deg 288deg, #bdc3c7 288deg 324deg, #ecf0f1 324deg 360deg
-            );
-            position: relative; border: 4px solid #fff; box-sizing: border-box;
+            width: 100%; height: 100%; border-radius: 50%; transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1);
+            background: conic-gradient(#e74c3c 0deg 36deg, #3498db 36deg 72deg, #bdc3c7 72deg 108deg, #ecf0f1 108deg 144deg, #bdc3c7 144deg 180deg, #ecf0f1 180deg 216deg, #bdc3c7 216deg 252deg, #ecf0f1 252deg 288deg, #bdc3c7 288deg 324deg, #ecf0f1 324deg 360deg);
+            position: relative; border: 4px solid #fff;
         }
+        .pointer { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid #ff9500; z-index: 20; }
+        .label { position: absolute; width: 100%; text-align: center; top: 20px; transform-origin: 50% 130px; font-weight: bold; font-size: 12px; left: 0; }
         
-        .pointer { 
-            position: absolute; top: -10px; left: 50%; transform: translateX(-50%); 
-            width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent; 
-            border-top: 35px solid #ff9500; z-index: 20;
-        }
+        #spin-btn { margin: 20px 0; padding: 15px 60px; font-size: 18px; font-weight: bold; background: linear-gradient(135deg, var(--line-green), var(--dark-green)); color: white; border: none; border-radius: 50px; box-shadow: 0 4px 15px rgba(6,199,85,0.3); }
+        #spin-btn:disabled { background: #ccc; box-shadow: none; opacity: 0.6; }
 
-        .label { 
-            position: absolute; width: 100%; text-align: center; 
-            top: 25px; transform-origin: 50% 130px; 
-            font-weight: bold; font-size: 13px; color: #444; left: 0;
-        }
-        .label.white { color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
-
-        #spin-btn { 
-            margin: 25px 0; padding: 16px 70px; font-size: 18px; font-weight: bold;
-            background: linear-gradient(135deg, var(--line-green), var(--dark-green));
-            color: white; border: none; border-radius: 50px; cursor: pointer; 
-            box-shadow: 0 6px 20px rgba(6, 199, 85, 0.3); transition: transform 0.2s;
-        }
-        #spin-btn:disabled { background: #ccc; box-shadow: none; opacity: 0.7; }
-
-        .record-card {
-            background: white; width: 85%; max-width: 380px; 
-            padding: 18px; border-radius: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        .record-title { font-size: 14px; font-weight: bold; color: #666; margin-bottom: 12px; }
-        .record-item { padding: 8px 0; border-bottom: 1px solid #f1f1f1; display: flex; justify-content: space-between; font-size: 14px; }
+        .record-card { background: white; width: 85%; max-width: 380px; padding: 15px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 30px; }
+        .record-item { padding: 8px 0; border-bottom: 1px solid #f1f1f1; display: flex; justify-content: space-between; font-size: 13px; color: #444; }
+        .lost { color: #999; } /* 銘謝惠顧的樣式 */
     </style>
 </head>
 <body>
-
     <div class="user-card">
-        <h3 id="user-name-display">歡迎賞金獵人, 載入中...</h3>
-        <div class="time-display" id="current-time">0000/00/00 00:00:00</div>
+        <h3 id="user-name-display">載入中...</h3>
+        <div class="time-display" id="current-time">正在取得時間...</div>
         <div class="stat-item">今日剩餘次數：<span id="tries">--</span> 次</div>
     </div>
 
     <div class="wheel-outer">
         <div class="pointer"></div>
-        <div class="wheel-container">
-            <div id="wheel">
-                <div class="label white" style="transform: rotate(18deg);">500元折價券</div>
-                <div class="label white" style="transform: rotate(54deg);">100元儲值金</div>
-                <div class="label" style="transform: rotate(90deg);">再接再厲</div>
-                <div class="label" style="transform: rotate(126deg);">再接再厲</div>
-                <div class="label" style="transform: rotate(162deg);">再接再厲</div>
-                <div class="label" style="transform: rotate(198deg);">再接再厲</div>
-                <div class="label" style="transform: rotate(234deg);">再接再厲</div>
-                <div class="label" style="transform: rotate(270deg);">再接再厲</div>
-                <div class="label" style="transform: rotate(306deg);">再接再厲</div>
-                <div class="label" style="transform: rotate(342deg);">再接再厲</div>
-            </div>
-        </div>
+        <div class="wheel-container"><div id="wheel">
+            <div class="label" style="transform: rotate(18deg); color:white;">500元折價券</div>
+            <div class="label" style="transform: rotate(54deg); color:white;">100元儲值金</div>
+            <div class="label" style="transform: rotate(90deg);">再接再厲</div>
+            <div class="label" style="transform: rotate(126deg);">再接再厲</div>
+            <div class="label" style="transform: rotate(162deg);">再接再厲</div>
+            <div class="label" style="transform: rotate(198deg);">再接再厲</div>
+            <div class="label" style="transform: rotate(234deg);">再接再厲</div>
+            <div class="label" style="transform: rotate(270deg);">再接再厲</div>
+            <div class="label" style="transform: rotate(306deg);">再接再厲</div>
+            <div class="label" style="transform: rotate(342deg);">再接再厲</div>
+        </div></div>
     </div>
 
     <button id="spin-btn" onclick="handleSpin()" disabled>點我抽獎</button>
 
     <div class="record-card">
-        <div class="record-title">🎁 今日獲獎紀錄：</div>
-        <div id="record-list" style="color:#999; text-align:center; font-size:13px;">尚無紀錄</div>
+        <div style="font-weight:bold; font-size:14px; margin-bottom:10px;">🎁 本次遊玩紀錄：</div>
+        <div id="record-list" style="color:#999; text-align:center; font-size:12px;">尚無紀錄</div>
     </div>
 
     <script>
@@ -125,110 +67,74 @@
         
         let tries = 0;
         let currentDeg = 0;
-        let isForced = false;
 
-        function updateDateTime() {
-            const now = new Date();
-            document.getElementById('current-time').innerText = now.toLocaleString('zh-TW', { hour12: false });
-        }
-        setInterval(updateDateTime, 1000);
+        function updateTime() { document.getElementById('current-time').innerText = new Date().toLocaleString(); }
+        setInterval(updateTime, 1000);
 
         async function start() {
-            updateDateTime();
+            updateTime();
             try {
                 await liff.init({ liffId: LIFF_ID });
-                if (!liff.isLoggedIn()) {
-                    liff.login();
-                } else {
+                if (!liff.isLoggedIn()) { liff.login(); } 
+                else {
                     const profile = await liff.getProfile();
-                    document.getElementById('user-name-display').innerText = `歡迎回來, ${profile.displayName}`;
+                    document.getElementById('user-name-display').innerText = `歡迎, ${profile.displayName}`;
                     checkTries(profile.userId, profile.displayName);
                 }
-            } catch (e) {
-                console.error("LIFF 初始化失敗", e);
-                // 非 LINE 環境應急顯示
-                document.getElementById('user-name-display').innerText = "訪客模式 (請用 LINE 開啟)";
-                checkTries("guest", "訪客");
-            }
+            } catch (e) { console.error(e); }
         }
 
         async function checkTries(userId, displayName) {
-            // 【核心應急邏輯】4秒超時強制啟動
+            // 超時保底：如果 5 秒沒回應，強制給 5 次 (這是連不上 GAS 的暫時方案)
             const timer = setTimeout(() => {
-                if (document.getElementById('tries').innerText === "--") {
-                    console.warn("後端連線超時，啟動應急模式");
-                    tries = 5;
-                    document.getElementById('tries').innerText = tries;
+                if(document.getElementById('tries').innerText === "--") {
+                    tries = 5; document.getElementById('tries').innerText = tries;
                     document.getElementById('spin-btn').disabled = false;
-                    isForced = true;
                 }
-            }, 4000);
+            }, 5000);
 
             try {
-                const response = await fetch(`${GAS_URL}?userId=${userId}&name=${encodeURIComponent(displayName)}&t=${Date.now()}`);
-                const res = await response.json();
-                
+                const res = await fetch(`${GAS_URL}?userId=${userId}&name=${encodeURIComponent(displayName)}&t=${Date.now()}`).then(r => r.json());
                 clearTimeout(timer);
-                if (!isForced) {
-                    tries = res.triesLeft;
-                    document.getElementById('tries').innerText = tries;
-                    if (tries > 0) document.getElementById('spin-btn').disabled = false;
-                }
-            } catch (e) {
-                console.error("資料庫連線失敗", e);
-            }
+                tries = res.triesLeft;
+                document.getElementById('tries').innerText = tries;
+                if (tries > 0) document.getElementById('spin-btn').disabled = false;
+            } catch (e) { console.error("連線失敗:", e); }
         }
 
         async function handleSpin() {
             if (tries <= 0) return;
             document.getElementById('spin-btn').disabled = true;
-            
-            let userId = "guest", displayName = "訪客";
-            try {
-                const profile = await liff.getProfile();
-                userId = profile.userId;
-                displayName = profile.displayName;
-            } catch(e){}
+            const profile = await liff.getProfile();
 
             const rand = Math.random() * 100;
-            let prizeName = "";
-            let target = 0;
+            let prizeName = "", target = 0;
             if (rand <= 1) { target = 0; prizeName = "500元折價券"; }
             else if (rand <= 2) { target = 1; prizeName = "100元儲值金"; }
             else { target = Math.floor(Math.random() * 8) + 2; prizeName = "再接再厲"; }
 
-            const rotateTo = 360 * 5 - (target * 36 + 18);
-            currentDeg += (rotateTo - (currentDeg % 360));
+            currentDeg += 360 * 5 + (360 - (target * 36 + 18) - (currentDeg % 360));
             document.getElementById('wheel').style.transform = `rotate(${currentDeg}deg)`;
 
-            // POST 到後端 (背景執行)
-            fetch(GAS_URL, {
-                method: "POST",
-                mode: "no-cors",
-                body: JSON.stringify({ userId: userId, displayName: displayName, prize: prizeName })
-            });
+            // 回傳資料庫
+            fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ userId: profile.userId, displayName: profile.displayName, prize: prizeName }) });
 
             setTimeout(() => {
                 tries--;
                 document.getElementById('tries').innerText = tries;
-                
-                if (prizeName !== "再接再厲") {
-                    const code = "SN" + Math.floor(Math.random()*100000);
-                    addRecord(prizeName, code);
-                    alert(`🎊 恭喜獲獎：${prizeName}！\n請截圖傳給小編。`);
-                } else {
-                    alert("👻 銘謝惠顧，下次會更好！");
-                }
+                addRecord(prizeName); // 呼叫新增紀錄功能
+                alert(prizeName === "再接再厲" ? "👻 銘謝惠顧！" : `🎊 恭喜獲得：${prizeName}`);
                 if (tries > 0) document.getElementById('spin-btn').disabled = false;
             }, 4000);
         }
 
-        function addRecord(name, code) {
+        function addRecord(name) {
             const list = document.getElementById('record-list');
             if(list.innerText.includes("尚無")) list.innerHTML = "";
             const item = document.createElement('div');
             item.className = 'record-item';
-            item.innerHTML = `<span>獲得 <b>${name}</b></span> <small style="color:#999">編號: ${code}</small>`;
+            const isLost = name === "再接再厲";
+            item.innerHTML = `<span class="${isLost ? 'lost' : ''}">${isLost ? '💀' : '🎁'} ${name}</span> <span>${new Date().toLocaleTimeString()}</span>`;
             list.prepend(item);
         }
 
