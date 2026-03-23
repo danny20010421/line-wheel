@@ -24,7 +24,6 @@
             color: #333;
         }
 
-        /* 用戶資訊卡片美化 */
         .user-card { 
             background: white; 
             width: 85%; 
@@ -35,17 +34,15 @@
             text-align: center; 
             box-shadow: var(--card-shadow);
         }
-        .user-card h3 { margin: 0 0 10px; font-size: 20px; color: #111; }
-        .time-display { font-size: 13px; color: #888; margin-bottom: 10px; }
-        .stat-row { display: flex; justify-content: center; gap: 20px; font-weight: bold; }
-        .stat-item { font-size: 15px; }
-        .stat-item span { color: #e74c3c; font-size: 18px; }
+        .user-card h3 { margin: 0 0 10px; font-size: 18px; color: #111; }
+        .time-display { font-size: 12px; color: #888; margin-bottom: 10px; }
+        .stat-item { font-size: 15px; font-weight: bold; }
+        .stat-item span { color: #e74c3c; font-size: 20px; }
 
-        /* 轉盤外框立體感 */
         .wheel-container { 
             position: relative; 
-            width: 320px; 
-            height: 320px; 
+            width: 300px; 
+            height: 300px; 
             margin: 15px auto;
             padding: 8px;
             background: #fff;
@@ -57,10 +54,10 @@
             width: 100%; height: 100%; border-radius: 50%; 
             transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1);
             background: conic-gradient(
-                #e74c3c 0deg 36deg,    /* 500元 */
-                #3498db 36deg 72deg,   /* 100元 */
-                #bdc3c7 72deg 108deg,  /* 銘謝 */
-                #ecf0f1 108deg 144deg, 
+                #e74c3c 0deg 36deg,
+                #3498db 36deg 72deg,
+                #bdc3c7 72deg 108deg,
+                #ecf0f1 108deg 144deg,
                 #bdc3c7 144deg 180deg,
                 #ecf0f1 180deg 216deg,
                 #bdc3c7 216deg 252deg,
@@ -74,41 +71,29 @@
         
         .pointer { 
             position: absolute; top: -12px; left: 50%; transform: translateX(-50%); 
-            width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent; 
-            border-top: 35px solid #ff9500; z-index: 10; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2));
+            width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; 
+            border-top: 35px solid #ff9500; z-index: 10;
         }
 
         .label { 
-            position: absolute; width: 100%; text-align: center; top: 25px; 
-            transform-origin: 50% 135px; font-weight: 800; font-size: 13px; color: #444;
+            position: absolute; width: 100%; text-align: center; top: 20px; 
+            transform-origin: 50% 130px; font-weight: 800; font-size: 12px; color: #444;
         }
         .label.white { color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
 
-        /* 紀錄欄位 */
-        .record-card {
-            background: rgba(255,255,255,0.7);
-            width: 85%;
-            max-width: 380px;
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 15px;
-            border: 1px dashed #ccc;
-        }
-        .record-card h4 { margin: 0 0 10px; font-size: 14px; color: #666; }
-        #record-list { font-size: 13px; color: #444; max-height: 100px; overflow-y: auto; }
-        .record-item { padding: 4px 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; }
-        .record-item b { color: var(--line-green); }
-
-        /* 按鈕美化 */
         #spin-btn { 
             margin: 20px 0; padding: 16px 60px; font-size: 18px; font-weight: bold;
             background: linear-gradient(135deg, var(--line-green), var(--dark-green));
             color: white; border: none; border-radius: 50px; cursor: pointer; 
-            box-shadow: 0 6px 20px rgba(6, 199, 85, 0.3); transition: all 0.2s;
+            box-shadow: 0 6px 20px rgba(6, 199, 85, 0.3);
         }
-        #spin-btn:disabled { background: #ccc; box-shadow: none; transform: none; cursor: not-allowed; }
-        #spin-btn:active { transform: scale(0.95); }
+        #spin-btn:disabled { background: #ccc; box-shadow: none; }
 
+        .record-card {
+            background: white; width: 85%; max-width: 380px; margin-top: 10px;
+            padding: 15px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .record-item { padding: 5px 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; font-size: 13px; }
     </style>
 </head>
 <body>
@@ -116,9 +101,7 @@
     <div class="user-card">
         <h3 id="user-name-display">歡迎賞金獵人, 載入中...</h3>
         <div class="time-display" id="current-time">正在取得時間...</div>
-        <div class="stat-row">
-            <div class="stat-item">今日剩餘次數：<span id="tries">--</span> 次</div>
-        </div>
+        <div class="stat-item">今日剩餘次數：<span id="tries">--</span> 次</div>
     </div>
 
     <div class="wheel-container">
@@ -140,10 +123,8 @@
     <button id="spin-btn" onclick="handleSpin()" disabled>點我抽獎</button>
 
     <div class="record-card">
-        <h4>🎁 今日獲獎紀錄：</h4>
-        <div id="record-list">
-            <div style="color:#999; text-align:center;">尚無紀錄</div>
-        </div>
+        <h4 style="margin:0 0 10px; font-size:14px; color:#666;">🎁 今日獲獎紀錄：</h4>
+        <div id="record-list" style="color:#999; text-align:center; font-size:13px;">尚無紀錄</div>
     </div>
 
     <script>
@@ -153,12 +134,9 @@
         let tries = 0;
         let currentDeg = 0;
 
-        // 更新日期時間
         function updateDateTime() {
             const now = new Date();
-            const dateStr = now.toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric' });
-            const timeStr = now.toLocaleTimeString('zh-TW', { hour12: false });
-            document.getElementById('current-time').innerText = `${dateStr} ${timeStr}`;
+            document.getElementById('current-time').innerText = now.toLocaleString('zh-TW', { hour12: false });
         }
         setInterval(updateDateTime, 1000);
 
@@ -174,19 +152,21 @@
                     checkTries(profile.userId, profile.displayName);
                 }
             } catch (e) {
-                console.error("LIFF 初始化失敗", e);
+                console.error(e);
+                // 應急：若 LIFF 初始化失敗，嘗試在非 LINE 環境顯示
+                document.getElementById('user-name-display').innerText = "訪客模式 (請用 LINE 開啟)";
             }
         }
 
         async function checkTries(userId, displayName) {
             try {
-                const response = await fetch(`${GAS_URL}?userId=${userId}&name=${encodeURIComponent(displayName)}&t=${new Date().getTime()}`);
+                const response = await fetch(`${GAS_URL}?userId=${userId}&name=${encodeURIComponent(displayName)}&t=${Date.now()}`);
                 const res = await response.json();
                 tries = res.triesLeft;
                 document.getElementById('tries').innerText = tries;
                 if (tries > 0) document.getElementById('spin-btn').disabled = false;
             } catch (e) {
-                console.error("無法連接資料庫", e);
+                console.error(e);
             }
         }
 
@@ -198,49 +178,4 @@
             const rand = Math.random() * 100;
             let prizeName = "";
             let target = 0;
-            if (rand <= 1) { target = 0; prizeName = "500元折價券"; }
-            else if (rand <= 2) { target = 1; prizeName = "100元儲值金"; }
-            else { target = Math.floor(Math.random() * 8) + 2; prizeName = "再接再厲"; }
-
-            const rotateTo = 360 * 5 - (target * 36 + 18);
-            currentDeg += (rotateTo - (currentDeg % 360));
-            document.getElementById('wheel').style.transform = `rotate(${currentDeg}deg)`;
-
-            // 非同步回傳後端，並取得隨機流水號
-            const postResponse = await fetch(GAS_URL, {
-                method: "POST",
-                body: JSON.stringify({ userId: profile.userId, displayName: profile.displayName, prize: prizeName })
-            });
-
-            setTimeout(() => {
-                tries--;
-                document.getElementById('tries').innerText = tries;
-                
-                if (prizeName !== "再接再厲") {
-                    const code = "SN" + Math.floor(Math.random()*10000); // 視覺模擬流水號
-                    addRecord(prizeName, code);
-                    alert(`🎊 恭喜獲獎：${prizeName}！\n請截圖傳給小編。`);
-                } else {
-                    alert("👻 銘謝惠顧，下次會更好！");
-                }
-
-                if (tries > 0) document.getElementById('spin-btn').disabled = false;
-            }, 4000);
-        }
-
-        function addRecord(name, code) {
-            const list = document.getElementById('record-list');
-            if(list.innerText === "尚無紀錄") list.innerHTML = "";
-            const item = document.createElement('div');
-            item.className = 'record-item';
-            item.innerHTML = `<span>獲得 <b>${name}</b></span> <small style="color:#999">${code}</small>`;
-            list.prepend(item);
-        }
-
-        start();
-    </script>
-</body>
-</html>
-    </script>
-</body>
-</html>
+            if (rand <= 1) { target = 0; prizeName
